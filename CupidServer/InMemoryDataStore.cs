@@ -36,15 +36,24 @@ public class InMemoryDataStore
             var blockedConnection = GetPersonConnectionByUsername(blockedUsername);
             if (blockedConnection != null)
             {
-                blockerConnection.BlockedUsers.Add(blockedConnection.Person.Username);
+                blockerConnection.BlockUser(blockedConnection.Person.Username);
             }
         }
     }
 
     public List<PersonConnection> GetAllNonWaitingPersonConnections()
     {
-        return PersonConnections.Where(connection => !connection.Value.IsReadingMail)
+        return PersonConnections.Where(connection => !connection.Value.IsReadingMailSafe())
                                 .Select(connection => connection.Value).ToList();
+    }
+
+    public void SetReadingMailByConnectionId(string connectionId, bool isReadingMail)
+    {
+        var connection = GetPersonConnectionByConnectionId(connectionId);
+        if (connection != null)
+        {
+            connection.SetReadingMail(isReadingMail);
+        }
     }
 
 }

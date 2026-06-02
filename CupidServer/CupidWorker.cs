@@ -38,7 +38,7 @@ public class CupidWorker : BackgroundService
         foreach (PersonConnection currentConnection in personConnections)
         {
             List<PersonConnection> nonBlockedConnections = personConnections.Where(
-                connection => !connection.BlockedUsers.Contains(currentConnection.Person.Username)
+                connection => !connection.HasBlocked(currentConnection.Person.Username)
                 && connection.ConnectionId != currentConnection.ConnectionId
             ).ToList();
 
@@ -55,7 +55,7 @@ public class CupidWorker : BackgroundService
             int randomMessageIndex = RandomNumberGenerator.GetInt32(0, MESSAGES.Length);
             string randomMessage = MESSAGES[randomMessageIndex];
 
-            currentConnection.IsReadingMail = true; 
+            _dataStore.SetReadingMailByConnectionId(currentConnection.ConnectionId, true);
 
             await _hubContext.Clients.Client(currentConnection.ConnectionId)
             .SendAsync("RecieveLoveLetter", new 
