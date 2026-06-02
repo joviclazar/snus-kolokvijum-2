@@ -34,7 +34,7 @@ public class CupidWorker : BackgroundService
             Console.WriteLine("No available connections were found...");
             return;
         }
-
+        int messagesSentCounter = 0;
         foreach (PersonConnection currentConnection in personConnections)
         {
             List<PersonConnection> nonBlockedConnections = personConnections.Where(
@@ -63,9 +63,17 @@ public class CupidWorker : BackgroundService
                 Username = bestConnection.Person.Username,
                 City = bestConnection.Person.City,
                 Age = bestConnection.Person.Age,
-                PhoneNumber = randomMessageIndex == NOT_INTERESTED_MESSAGE_INDEX ? "" : bestConnection.Person.PhoneNumber
-            }, randomMessage);
-
+                PhoneNumber = randomMessageIndex == NOT_INTERESTED_MESSAGE_INDEX ? "" : bestConnection.Person.PhoneNumber,
+                Message = randomMessage
+            });
+            messagesSentCounter++;
+        }
+        Console.WriteLine("Cupidon has done his work!");
+        if (messagesSentCounter == 0)
+        {
+            Console.WriteLine("No messages were sent...");
+        } else {
+            Console.WriteLine($"{messagesSentCounter} messages were sent...");
         }
     }
 
