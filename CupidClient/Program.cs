@@ -39,16 +39,16 @@ while (string.IsNullOrWhiteSpace(phoneNumber))
 var connection = new HubConnectionBuilder().WithUrl("http://localhost:5205/cupidHub").Build();
 
 bool hasNewLetter = false;
-connection.On<LoveLetter, string>("RecieveLoveLetter", (partner, poruka) => 
+connection.On<LoveLetter>("RecieveLoveLetter", (loveLetter) => 
 {
     hasNewLetter = true;
     
     Console.WriteLine();
     Console.WriteLine("You have received a new love letter!");
-    Console.WriteLine($"From: {partner.Username} ({partner.City}, {partner.Age} years old)");
-    Console.WriteLine($"Message: \"{poruka}\"");
+    Console.WriteLine($"From: {loveLetter.Username} ({loveLetter.City}, {loveLetter.Age} years old)");
+    Console.WriteLine($"Message: \"{loveLetter.Message}\"");
 
-    Console.WriteLine($"Phone: {(partner.PhoneNumber == "" ? "(hidden)" : partner.PhoneNumber)}");
+    Console.WriteLine($"Phone: {(loveLetter.PhoneNumber == "" ? "(hidden)" : loveLetter.PhoneNumber)}");
 
     Console.WriteLine("---------------------------------");
     Console.WriteLine("Press ENTER to confirm receipt or type /block username:");
@@ -94,12 +94,4 @@ while (true)
             }
         }
     }
-}
-
-public class LoveLetter
-{
-    public string Username { get; set; } = "";
-    public string City { get; set; } = "";
-    public int Age { get; set; }
-    public string PhoneNumber { get; set; } = "";
 }
